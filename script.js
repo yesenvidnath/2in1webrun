@@ -48,9 +48,17 @@ iconContainers.forEach((iconContainer) => {
             iframe1.src = url;
             urlInput1.value = url;
             messageContainer.textContent = '';
+        } else if (iframe2Loaded) {
+            iframe2.src = url;
+            urlInput2.value = url;
+            messageContainer.textContent = '';
         } else if (!iframe2Loaded) {
             iframe2.src = url;
             urlInput2.value = url;
+            messageContainer.textContent = '';
+        } else if (iframe1Loaded) {
+            iframe1.src = url;
+            urlInput1.value = url;
             messageContainer.textContent = '';
         } else {
             messageContainer.textContent = "Both frames are in use. Clear at least one frame.";
