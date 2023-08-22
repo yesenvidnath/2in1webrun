@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dynamic Website Loader</title>
+    <style>
+        /* Example CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .website-frame {
+          margin-top: 30px;
+            display: flex;
+            width: 90%;
+            height: 90vh;
+            border: 2px solid #333;
+            overflow: hidden;
+        }
+
+        iframe {
+            flex: 1;
+            border: none;
+        }
+
+        .url-input {
+            margin-top: 20px;
+        }
+
+        #url-input-1,
+        #url-input-2 {
+            padding: 5px;
+            width: 300px;
+        }
+
+        #load-button {
+            padding: 5px 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="website-frame">
+        <iframe id="website-iframe-1" src=""></iframe>
+        <iframe id="website-iframe-2" src=""></iframe>
+    </div>
+
+    <div class="url-input">
+        <input type="text" id="url-input-1" placeholder="Enter URL 1">
+        <button id="load-button-1">Load Website 1</button>
+        <button id="clear-button-1">Clear Website 1</button>
+        <input type="text" id="url-input-2" placeholder="Enter URL 2">
+        <button id="load-button-2">Load Website 2</button>
+        <button id="clear-button-2">Clear Website 2</button>
+    </div>
+
+    <div class="url-input">
+      <!-- ... other input fields and buttons ... -->
+      <div class="icon" data-url="https://www.example.com">Example 1</div>
+      <div class="icon" data-url="https://www.example2.com">Example 2</div>
+    </div>
+  
+    <div id="message"></div>
+
+    <script>
+
+const iframe1 = document.getElementById('website-iframe-1');
+const iframe2 = document.getElementById('website-iframe-2');
+const urlInput1 = document.getElementById('url-input-1');
+const urlInput2 = document.getElementById('url-input-2');
+const loadButton1 = document.getElementById('load-button-1');
+const loadButton2 = document.getElementById('load-button-2');
+const clearButton1 = document.getElementById('clear-button-1');
+const clearButton2 = document.getElementById('clear-button-2');
+const iconContainers = document.querySelectorAll('.icon');
+const messageContainer = document.getElementById('message');
+
+loadButton1.addEventListener('click', () => {
+    const url1 = urlInput1.value;
+    if (url1) {
+        iframe1.src = url1;
+        messageContainer.textContent = '';
+    }
+});
+
+loadButton2.addEventListener('click', () => {
+    const url2 = urlInput2.value;
+    if (url2) {
+        iframe2.src = url2;
+        messageContainer.textContent = '';
+    }
+});
+
+clearButton1.addEventListener('click', () => {
+    iframe1.src = 'about:blank';
+    urlInput1.value = '';
+    messageContainer.textContent = '';
+});
+
+clearButton2.addEventListener('click', () => {
+    iframe2.src = 'about:blank';
+    urlInput2.value = '';
+    messageContainer.textContent = '';
+});
+
+iconContainers.forEach((iconContainer) => {
+    iconContainer.addEventListener('click', () => {
+        const url = iconContainer.getAttribute('data-url');
+        const iframe1Loaded = iframe1.contentWindow.location.href !== 'about:blank';
+        const iframe2Loaded = iframe2.contentWindow.location.href !== 'about:blank';
+
+        if (!iframe1Loaded) {
+            iframe1.src = url;
+            urlInput1.value = url;
+            messageContainer.textContent = '';
+        } else if (!iframe2Loaded) {
+            iframe2.src = url;
+            urlInput2.value = url;
+            messageContainer.textContent = '';
+        } else {
+            messageContainer.textContent = "Both frames are in use. Clear at least one frame.";
+        }
+    });
+});
+
+
+    </script>
+</body>
+</html>
