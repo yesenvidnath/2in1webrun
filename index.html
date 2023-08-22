@@ -41,8 +41,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.2.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.2.0/firebase-analytics.js";
-        import { getDatabase, ref, increment, onValue } from "https://www.gstatic.com/firebasejs/10.2.0/firebase-database.js";
-      
+        import { getDatabase, ref, increment, onValue, update } from "https://www.gstatic.com/firebasejs/10.2.0/firebase-database.js";
+    
         // Your web app's Firebase configuration
         const firebaseConfig = {
           apiKey: "AIzaSyAYbpgLOJpKN4CbtLughvZt-NTK3wWYd2k",
@@ -53,43 +53,45 @@
           appId: "1:153665440519:web:e636f391be9154088b93a2",
           measurementId: "G-RTY27KBG63"
         };
-
+    
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
         const database = getDatabase();
-      
+    
         // Reference to the user count in the Firebase Realtime Database
         const userCountRef = ref(database, "user_count");
-      </script>
-      
-      <script type="module">
-        const userCountDisplay = document.getElementById("user-count");
-      
-        // Function to update user count display
-        function updateUserCount(count) {
-          userCountDisplay.innerText = `Current Users: ${count}`;
-        }
-      
+    
+        // Initialize user count
+        let initialUserCount = 0;
+    
         // Listen to changes in user count in real-time
         onValue(userCountRef, (snapshot) => {
           const userCount = snapshot.val();
-          updateUserCount(userCount);
+          if (userCount !== null) {
+            updateUserCount(userCount);
+            initialUserCount = userCount;
+          }
+        });
+    
+        // Function to update user count display
+        const userCountDisplay = document.getElementById("user-count");
+        function updateUserCount(count) {
+          userCountDisplay.innerText = `Current Users: ${count}`;
+        }
+    
+        // Increment user count on connection
+        const incrementCount = increment(1);
+        update(userCountRef, incrementCount);
+    
+        // Decrement user count on disconnection
+        window.addEventListener("beforeunload", () => {
+          if (initialUserCount > 0) {
+            const decrementCount = increment(-1);
+            update(userCountRef, decrementCount);
+          }
         });
     </script>
-      
-    <script type="module">
-      // Increment user count on connection
-      const incrementCount = increment(1);
-      update(userCountRef, incrementCount);
-    
-      // Decrement user count on disconnection
-      window.addEventListener("beforeunload", () => {
-        const decrementCount = increment(-1);
-        update(userCountRef, decrementCount);
-      });
-    </script>
-      
-      
+          
 </body>
 </html>
